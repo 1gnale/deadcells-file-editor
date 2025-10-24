@@ -1,0 +1,17 @@
+{
+  "name": "deadcells-save-editor-nodejs",
+  "version": "1.0.0",
+  "description": "Editor de archivos de guardado de Dead Cells usando Node.js y estructura real",
+  "main": "create_deadcells_save.js",
+  "scripts": {
+    "test": "node create_deadcells_save.js",
+    "edit": "node edit_deadcells_save.js",
+    "create": "node create_deadcells_save.js"
+  },
+  "keywords": ["deadcells", "save", "editor", "gaming"],
+  "author": "Dead Cells Save Editor",
+  "license": "MIT",
+  "dependencies": {
+    "pako": "^2.1.0"
+  }
+}
