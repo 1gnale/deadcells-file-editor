@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dead Cells Save Editor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧟 Dead Cells Save Editor</h1>
+            <p>Crea un archivo de guardado personalizado con los desbloqueos que elijas</p>
+        </header>
+
+        <main>
+            <div class="section">
+                <h2>⚔️ Armas</h2>
+                <div class="items-grid" id="weapons">
+                    <!-- Se llenarán dinámicamente -->
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🏹 Arcos y Armas a Distancia</h2>
+                <div class="items-grid" id="ranged">
+                    <!-- Se llenarán dinámicamente -->
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🛡️ Escudos</h2>
+                <div class="items-grid" id="shields">
+                    <!-- Se llenarán dinámicamente -->
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💥 Granadas y Skills</h2>
+                <div class="items-grid" id="skills">
+                    <!-- Se llenarán dinámicamente -->
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🎭 Outfits</h2>
+                <div class="items-grid" id="outfits">
+                    <!-- Se llenarán dinámicamente -->
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🏛️ Runes</h2>
+                <div class="items-grid" id="runes">
+                    <!-- Se llenarán dinámicamente -->
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>⚙️ Opciones del Guardado</h2>
+                <div class="save-options">
+                    <label>
+                        <input type="number" id="cells" value="0" min="0" max="999999">
+                        <span>Células</span>
+                    </label>
+                    <label>
+                        <input type="number" id="gold" value="0" min="0" max="999999">
+                        <span>Oro</span>
+                    </label>
+                    <label>
+                        <input type="number" id="runs" value="0" min="0" max="9999">
+                        <span>Runs Completadas</span>
+                    </label>
+                    <label>
+                        <input type="number" id="bossCell" value="0" min="0" max="5">
+                        <span>Boss Cell Level</span>
+                    </label>
+                    <label>
+                        <input type="number" id="deaths" value="0" min="0" max="99999">
+                        <span>Muertes</span>
+                    </label>
+                    <label>
+                        <input type="number" id="kills" value="0" min="0" max="999999">
+                        <span>Enemigos Eliminados</span>
+                    </label>
+                    <label>
+                        <input type="number" id="totalPlayTime" value="0" min="0" max="999999">
+                        <span>Tiempo Jugado (horas)</span>
+                    </label>
+                    <label>
+                        <input type="text" id="bestTime" value="99:99:99" pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}">
+                        <span>Mejor Tiempo (HH:MM:SS)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🆕 Nuevas Categorías (DLCs)</h2>
+                <div class="dlc-info">
+                    <div class="dlc-badge">🌱 The Bad Seed</div>
+                    <div class="dlc-badge">🏔️ Fatal Falls</div>
+                    <div class="dlc-badge">🌊 The Queen and the Sea</div>
+                    <div class="dlc-badge">🧛 Return to Castlevania</div>
+                    <div class="dlc-badge">🎮 Everyone is Here</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🧬 Mutaciones</h2>
+                <div class="items-grid" id="mutations">
+                    <!-- Se llenarán dinámicamente -->
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🎯 Presets Rápidos</h2>
+                <div class="presets-grid">
+                    <button class="preset-btn" onclick="app.applyPreset('newGame')">
+                        <span class="preset-name">🆕 Nuevo Juego</span>
+                        <span class="preset-desc">Items básicos para empezar</span>
+                    </button>
+                    <button class="preset-btn" onclick="app.applyPreset('speedrun')">
+                        <span class="preset-name">⚡ Speedrun</span>
+                        <span class="preset-desc">Optimizado para carreras rápidas</span>
+                    </button>
+                    <button class="preset-btn" onclick="app.applyPreset('allWeapons')">
+                        <span class="preset-name">⚔️ Todas las Armas</span>
+                        <span class="preset-desc">Desbloquea arsenal completo</span>
+                    </button>
+                    <button class="preset-btn" onclick="app.applyPreset('completionist')">
+                        <span class="preset-name">🏆 Completista</span>
+                        <span class="preset-desc">100% desbloqueado</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📁 Importar Guardado</h2>
+                <div class="import-section">
+                    <input type="file" id="fileInput" accept=".save,.json" style="display: none;">
+                    <button id="importButton" class="btn secondary">📂 Cargar Guardado Existente</button>
+                    <p class="import-help">Importa un archivo .save o .json para editar</p>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button id="selectAll" class="btn secondary">Seleccionar Todo</button>
+                <button id="deselectAll" class="btn secondary">Deseleccionar Todo</button>
+                <button id="generateRealPako" class="btn ultimate">🔥 Generar user.dat con PAKO</button>
+                <button id="generateRealSave" class="btn enhanced">⚡ Generar user.dat REAL</button>
+                <button id="generateSave" class="btn primary">🎮 Generar user.dat (Experimental)</button>
+                <button id="generateBackup" class="btn alternative">📋 Generar Backup Alternativo</button>
+            </div>
+
+            <div class="compatibility-notice">
+                <h3>ℹ️ Opciones de Generación</h3>
+                <p><strong>🔥 user.dat con PAKO:</strong> Usa pako.js real para compresión zlib auténtica (MÁXIMA COMPATIBILIDAD)</p>
+                <p><strong>⚡ user.dat REAL:</strong> Basado en análisis de la estructura interna real</p>
+                <p><strong>🎮 user.dat Experimental:</strong> Simulación del formato binario</p>
+                <p><strong>📋 Backup Alternativo:</strong> Archivos JSON/TXT para herramientas de modding</p>
+                <p><strong>Orden recomendado:</strong> Prueba PAKO → REAL → Backup si fallan</p>
+            </div>
+        </main>
+
+        <footer>
+            <p>⚠️ Haz backup de tu archivo de guardado original antes de usar archivos generados</p>
+        </footer>
+    </div>
+
+    <script src="https://unpkg.com/pako@2.1.0/dist/pako.min.js"></script>
+    <script src="dead-cells-data.js"></script>
+    <script src="userdat-generator.js"></script>
+    <script src="real-userdat-generator.js"></script>
+    <script src="pako-generator.js"></script>
+    <script src="backup-generator.js"></script>
+    <script src="save-generator.js"></script>
+    <script src="utils.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

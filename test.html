@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Dead Cells Save Editor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #4ECDCC;
+            border-radius: 8px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        .success { background: rgba(78, 205, 196, 0.2); }
+        .error { background: rgba(255, 99, 71, 0.2); }
+        .warning { background: rgba(255, 193, 7, 0.2); }
+    </style>
+</head>
+<body>
+    <h1>🧪 Dead Cells Save Editor - Test Suite</h1>
+    
+    <div class="test-section">
+        <h2>📋 Test de Carga de Módulos</h2>
+        <div id="module-tests"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎮 Test de Datos</h2>
+        <div id="data-tests"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>⚙️ Test de Generador</h2>
+        <div id="generator-tests"></div>
+    </div>
+
+    <!-- Cargar todos los módulos -->
+    <script src="dead-cells-data.js"></script>
+    <script src="utils.js"></script>
+    <script src="userdat-generator.js"></script>
+    <script src="save-generator.js"></script>
+    <script src="app.js"></script>
+
+    <script>
+        function addTestResult(containerId, message, type = 'success') {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = message;
+            container.appendChild(div);
+        }
+
+        function runTests() {
+            console.log('🧪 Iniciando test suite...');
+
+            // Test 1: Verificar carga de módulos
+            try {
+                if (typeof DEAD_CELLS_DATA !== 'undefined') {
+                    addTestResult('module-tests', '✅ DEAD_CELLS_DATA cargado correctamente');
+                } else {
+                    addTestResult('module-tests', '❌ Error: DEAD_CELLS_DATA no está definido', 'error');
+                }
+
+                if (typeof DeadCellsSaveGenerator !== 'undefined') {
+                    addTestResult('module-tests', '✅ DeadCellsSaveGenerator cargado correctamente');
+                } else {
+                    addTestResult('module-tests', '❌ Error: DeadCellsSaveGenerator no está definido', 'error');
+                }
+
+                if (typeof DeadCellsUserDatGenerator !== 'undefined') {
+                    addTestResult('module-tests', '✅ DeadCellsUserDatGenerator cargado correctamente');
+                } else {
+                    addTestResult('module-tests', '❌ Error: DeadCellsUserDatGenerator no está definido', 'error');
+                }
+            } catch (error) {
+                addTestResult('module-tests', `❌ Error en test de módulos: ${error.message}`, 'error');
+            }
+
+            // Test 2: Verificar estructura de datos
+            try {
+                const categories = Object.keys(DEAD_CELLS_DATA);
+                addTestResult('data-tests', `✅ Categorías encontradas: ${categories.join(', ')}`);
+
+                let totalItems = 0;
+                categories.forEach(category => {
+                    const items = DEAD_CELLS_DATA[category];
+                    totalItems += items.length;
+                    addTestResult('data-tests', `📦 ${category}: ${items.length} items`);
+                });
+
+                addTestResult('data-tests', `🎯 Total de items: ${totalItems}`);
+
+                // Verificar mutaciones específicamente
+                if (DEAD_CELLS_DATA.mutations) {
+                    const mutations = DEAD_CELLS_DATA.mutations;
+                    const mutationTypes = [...new Set(mutations.map(m => m.type))];
+                    addTestResult('data-tests', `🧬 Tipos de mutaciones: ${mutationTypes.join(', ')}`);
+                    
+                    const dlcMutations = mutations.filter(m => m.dlc);
+                    addTestResult('data-tests', `🎮 Mutaciones de DLC: ${dlcMutations.length}`);
+                }
+
+            } catch (error) {
+                addTestResult('data-tests', `❌ Error en test de datos: ${error.message}`, 'error');
+            }
+
+            // Test 3: Verificar generador
+            try {
+                const generator = new DeadCellsSaveGenerator();
+                addTestResult('generator-tests', '✅ DeadCellsSaveGenerator instanciado correctamente');
+
+                // Test de selección de items
+                generator.addSelectedItem('weapon_assault_shield');
+                generator.addSelectedItem('mutation_dead_inside');
+                
+                const stats = generator.getSaveStats();
+                addTestResult('generator-tests', `📊 Stats generadas: ${stats.totalItemsSelected} items seleccionados`);
+
+                // Test de generación user.dat
+                const userDatFile = generator.generateUserDatSave();
+                addTestResult('generator-tests', `💾 Archivo user.dat generado: ${userDatFile.metadata.size} bytes`);
+
+                addTestResult('generator-tests', '✅ Todos los tests del generador pasaron');
+
+            } catch (error) {
+                addTestResult('generator-tests', `❌ Error en test del generador: ${error.message}`, 'error');
+            }
+        }
+
+        // Ejecutar tests cuando todo esté cargado
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(runTests, 100); // Pequeño delay para asegurar carga completa
+        });
+    </script>
+</body>
+</html>
